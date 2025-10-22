@@ -48,6 +48,17 @@ app = FastAPI(
 )
 
 
+@app.get("/", response_class=HTMLResponse)
+async def index(request: Request):
+    """
+    Landing page with date picker and quick presets.
+
+    Returns:
+        HTML page with date selection interface
+    """
+    return templates.TemplateResponse("index.html", {"request": request})
+
+
 @app.get("/health")
 async def health_check():
     """

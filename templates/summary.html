@@ -43,10 +43,74 @@
 
         .date-range {
             background: #f8f9fa;
-            padding: 15px;
+            padding: 20px;
             border-radius: 8px;
             margin-bottom: 30px;
             border-left: 4px solid #667eea;
+        }
+
+        .date-range-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .date-input-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 150px;
+        }
+
+        .date-input-group label {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .date-input-group input[type="date"],
+        .date-input-group select {
+            padding: 8px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.95em;
+            transition: border-color 0.3s;
+        }
+
+        .date-input-group input[type="date"]:focus,
+        .date-input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .update-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .update-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #764ba2;
         }
 
         .totals-grid {
@@ -158,12 +222,30 @@
 </head>
 <body>
     <div class="container">
+        <a href="/" class="back-link">← Back to Home</a>
+
         <h1>Andiron FX Summary</h1>
         <p class="subtitle">EUR → USD Exchange Rate Analysis</p>
 
         <div class="date-range">
-            <strong>Period:</strong> {{ start }} to {{ end }} |
-            <strong>Breakdown:</strong> {{ breakdown }}
+            <form class="date-range-form" method="get" action="/summary/view">
+                <div class="date-input-group">
+                    <label for="start">Start Date</label>
+                    <input type="date" id="start" name="start" value="{{ start }}" required>
+                </div>
+                <div class="date-input-group">
+                    <label for="end">End Date</label>
+                    <input type="date" id="end" name="end" value="{{ end }}" required>
+                </div>
+                <div class="date-input-group">
+                    <label for="breakdown">Breakdown</label>
+                    <select id="breakdown" name="breakdown">
+                        <option value="day" {% if breakdown == 'day' %}selected{% endif %}>Daily</option>
+                        <option value="none" {% if breakdown == 'none' %}selected{% endif %}>Totals Only</option>
+                    </select>
+                </div>
+                <button type="submit" class="update-btn">Update</button>
+            </form>
         </div>
 
         <div class="totals-grid">
