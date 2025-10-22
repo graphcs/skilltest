@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andiron FX Summary - EUR/USD</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .date-range {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .totals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .total-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .total-card h3 {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .total-card .value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .chart-container {
+            margin: 40px 0;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .positive {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        .negative {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        .neutral {
+            color: #6b7280;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-style: italic;
+        }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .pineapple {
+            font-size: 2em;
+            display: inline-block;
+            animation: sway 2s ease-in-out infinite;
+        }
+
+        @keyframes sway {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Andiron FX Summary</h1>
+        <p class="subtitle">EUR → USD Exchange Rate Analysis</p>
+
+        <div class="date-range">
+            <strong>Period:</strong> {{ start }} to {{ end }} |
+            <strong>Breakdown:</strong> {{ breakdown }}
+        </div>
+
+        <div class="totals-grid">
+            <div class="total-card">
+                <h3>Start Rate</h3>
+                <div class="value">{{ "%.6f"|format(data.totals.start_rate) if data.totals.start_rate else 'N/A' }}</div>
+            </div>
+            <div class="total-card">
+                <h3>End Rate</h3>
+                <div class="value">{{ "%.6f"|format(data.totals.end_rate) if data.totals.end_rate else 'N/A' }}</div>
+            </div>
+            <div class="total-card">
+                <h3>Mean Rate</h3>
+                <div class="value">{{ "%.6f"|format(data.totals.mean_rate) if data.totals.mean_rate else 'N/A' }}</div>
+            </div>
+            <div class="total-card">
+                <h3>Total Change</h3>
+                <div class="value">
+                    {% if data.totals.total_pct_change is not none %}
+                        {{ "%.2f"|format(data.totals.total_pct_change) }}%
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if data.daily %}
+        <div class="chart-container">
+            <canvas id="ratesChart"></canvas>
+        </div>
+
+        <h2 style="margin-bottom: 20px; color: #667eea;">Daily Breakdown</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Rate (EUR → USD)</th>
+                    <th>Change %</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for day in data.daily %}
+                <tr>
+                    <td>{{ day.date }}</td>
+                    <td>{{ "%.6f"|format(day.rate) }}</td>
+                    <td>
+                        {% if day.pct_change is none %}
+                            <span class="neutral">—</span>
+                        {% elif day.pct_change > 0 %}
+                            <span class="positive">+{{ "%.2f"|format(day.pct_change) }}%</span>
+                        {% elif day.pct_change < 0 %}
+                            <span class="negative">{{ "%.2f"|format(day.pct_change) }}%</span>
+                        {% else %}
+                            <span class="neutral">0.00%</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="no-data">
+            <p>No daily breakdown available (breakdown mode: {{ breakdown }})</p>
+        </div>
+        {% endif %}
+
+        <footer>
+            <p>Coins alone do not tell the story; the pattern and the change reveal the truth.</p>
+            <p style="margin-top: 10px;">
+                <span class="pineapple">🍍</span> andiron-cursor ✅
+            </p>
+        </footer>
+    </div>
+
+    {% if data.daily %}
+    <script>
+        const ctx = document.getElementById('ratesChart').getContext('2d');
+        const dailyData = {{ data.daily | tojson }};
+
+        const dates = dailyData.map(d => d.date);
+        const rates = dailyData.map(d => d.rate);
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'EUR → USD Rate',
+                    data: rates,
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#667eea',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Exchange Rate Trend',
+                        font: {
+                            size: 18,
+                            weight: 'bold'
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Rate: ' + context.parsed.y.toFixed(6);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toFixed(4);
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Exchange Rate'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    {% endif %}
+</body>
+</html>
