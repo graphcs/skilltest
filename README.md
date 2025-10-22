@@ -283,6 +283,60 @@ The service handles various edge cases:
 
 ---
 
+## Deployment
+
+### Deploy to Railway.app
+
+Railway.app offers the easiest deployment with a generous free tier. The app is already configured with the necessary files (`railway.json`, `Procfile`, `runtime.txt`).
+
+**Quick Deploy Steps:**
+
+1. **Sign up/Login to Railway**
+   - Go to [railway.app](https://railway.app)
+   - Sign in with your GitHub account
+
+2. **Create New Project**
+   - Click "New Project"
+   - Select "Deploy from GitHub repo"
+   - Choose the `graphcs/skilltest` repository
+
+3. **Configure Service**
+   - Railway will auto-detect the configuration
+   - No environment variables needed (using public Frankfurter API)
+   - Click "Deploy"
+
+4. **Get Your Live URL**
+   - Once deployed, go to "Settings" → "Networking"
+   - Click "Generate Domain"
+   - Your API will be live at: `https://your-app-name.up.railway.app`
+
+5. **Test Your Deployment**
+   ```bash
+   # Health check
+   curl https://your-app-name.up.railway.app/health
+
+   # API endpoint
+   curl "https://your-app-name.up.railway.app/summary?start=2025-01-01&end=2025-01-10&breakdown=day"
+
+   # View in browser
+   open "https://your-app-name.up.railway.app/summary/view?start=2025-01-01&end=2025-01-31"
+   ```
+
+**Railway Free Tier:**
+- 500 hours/month of execution time
+- $5 free credit per month
+- Automatic HTTPS
+- Zero-downtime deploys
+- Auto-deploy on git push
+
+**Alternative Deployment Options:**
+- **Render.com**: Similar to Railway, also has free tier
+- **Fly.io**: Requires Dockerfile, good performance
+- **Vercel**: Serverless option, requires adapter
+- **Heroku**: Classic option, $5/month minimum
+
+---
+
 ## Development
 
 ### Run with auto-reload
