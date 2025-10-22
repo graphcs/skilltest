@@ -86,35 +86,6 @@
             border-color: #667eea;
         }
 
-        .breakdown-group {
-            margin-bottom: 25px;
-        }
-
-        .breakdown-options {
-            display: flex;
-            gap: 15px;
-            margin-top: 8px;
-        }
-
-        .radio-option {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .radio-option input[type="radio"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        .radio-option label {
-            margin: 0;
-            text-transform: none;
-            cursor: pointer;
-            font-weight: normal;
-        }
-
         .presets {
             margin-bottom: 25px;
         }
@@ -240,7 +211,6 @@
                 <div class="presets">
                     <h3>Quick Presets</h3>
                     <div class="preset-buttons">
-                        <button type="button" class="preset-btn" onclick="setPreset('today')">Today</button>
                         <button type="button" class="preset-btn" onclick="setPreset('last7')">Last 7 Days</button>
                         <button type="button" class="preset-btn" onclick="setPreset('last30')">Last 30 Days</button>
                         <button type="button" class="preset-btn" onclick="setPreset('thisMonth')">This Month</button>
@@ -262,19 +232,7 @@
                     </div>
                 </div>
 
-                <div class="breakdown-group">
-                    <label>Breakdown Mode</label>
-                    <div class="breakdown-options">
-                        <div class="radio-option">
-                            <input type="radio" id="breakdown-day" name="breakdown" value="day" checked>
-                            <label for="breakdown-day">Daily Breakdown</label>
-                        </div>
-                        <div class="radio-option">
-                            <input type="radio" id="breakdown-none" name="breakdown" value="none">
-                            <label for="breakdown-none">Totals Only</label>
-                        </div>
-                    </div>
-                </div>
+                <input type="hidden" name="breakdown" value="day">
 
                 <button type="submit" class="submit-btn">Analyze Exchange Rates</button>
             </div>

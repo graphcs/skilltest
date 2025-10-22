@@ -237,13 +237,7 @@
                     <label for="end">End Date</label>
                     <input type="date" id="end" name="end" value="{{ end }}" required>
                 </div>
-                <div class="date-input-group">
-                    <label for="breakdown">Breakdown</label>
-                    <select id="breakdown" name="breakdown">
-                        <option value="day" {% if breakdown == 'day' %}selected{% endif %}>Daily</option>
-                        <option value="none" {% if breakdown == 'none' %}selected{% endif %}>Totals Only</option>
-                    </select>
-                </div>
+                <input type="hidden" name="breakdown" value="day">
                 <button type="submit" class="update-btn">Update</button>
             </form>
         </div>
