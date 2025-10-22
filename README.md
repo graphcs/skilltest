@@ -6,6 +6,10 @@ A FastAPI-based service for analyzing EUR→USD exchange rates with daily breakd
 
 > *"Coins alone do not tell the story; show me the pattern and the change."*
 
+## Video demo
+
+https://www.loom.com/share/298116495a654e0e84c57a7bbe9fa4f4
+
 ## Features
 
 - 📊 **Daily FX Rate Analysis** - Day-by-day EUR→USD exchange rates with percentage changes
